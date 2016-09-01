@@ -1,0 +1,6 @@
+{
+  "service": {
+    "name"    : "pokemon",
+    "version" : "1.0.0"
+  }
+}
