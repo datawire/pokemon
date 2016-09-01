@@ -1,0 +1,43 @@
+---
+  apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    name: pokemon
+    namespace: services
+  spec:
+    replicas: 3
+    template:
+      metadata:
+        labels:
+          app: pokemon
+      spec:
+        containers:
+        - name: master
+          image: us.gcr.io/datawireio/pokemon:0.1
+          env:
+          - name: DATAWIRE_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: datawire
+                key: token
+          - name: DATAWIRE_ROUTABLE_HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          ports:
+          - containerPort: 5000
+
+---
+  kind: Service
+  apiVersion: v1
+  metadata:
+    name: pokemon
+    namespace: services
+  spec:
+    selector:
+      app: pokemon
+    ports:
+      - protocol: TCP
+        port: 5000
+        targetPort: 5000
+        name: pokemon
